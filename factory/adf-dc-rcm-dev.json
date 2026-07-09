@@ -1,0 +1,15 @@
+{
+	"name": "adf-dc-rcm-dev",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6f885095-4e5d-491c-94ec-ea7e4c0d3332",
+		"tenantId": "78559890-0b89-4d67-adfe-ff673fb5a490"
+	}
+}
