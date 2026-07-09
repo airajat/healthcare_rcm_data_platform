@@ -1,0 +1,19 @@
+{
+	"name": "ls_dl_rcm_dev",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDatabricksDeltaLake",
+		"typeProperties": {
+			"domain": "adb-7405613093469147.7.azuredatabricks.net",
+			"clusterId": "adb-7405613093469147.7.azuredatabricks.net",
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_kv_rcm_dev",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "dl-token"
+			}
+		}
+	}
+}
