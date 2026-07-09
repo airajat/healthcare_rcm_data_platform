@@ -1,0 +1,29 @@
+{
+	"name": "ls_db_rcm_dev",
+	"properties": {
+		"parameters": {
+			"db_name": {
+				"type": "string",
+				"defaultValue": "@{dataset().db_name}"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "sqlserver-rcm.database.windows.net",
+			"database": "@{linkedService().db_name}",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "dc-sql-user",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_kv_rcm_dev",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "sql-db-password"
+			}
+		}
+	}
+}
