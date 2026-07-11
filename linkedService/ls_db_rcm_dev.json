@@ -4,7 +4,7 @@
 		"parameters": {
 			"db_name": {
 				"type": "string",
-				"defaultValue": "@{dataset().db_name}"
+				"defaultValue": "@dataset().db_name"
 			}
 		},
 		"annotations": [],
