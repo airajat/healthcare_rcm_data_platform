@@ -1,0 +1,19 @@
+{
+	"name": "ls_adls_rcm_dev",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://strcmdata.dfs.core.windows.net/",
+			"accountKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_kv_rcm_dev",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "dc-adlsgen2-key",
+				"secretVersion": "a11e75120aa34b199ed8924f1ecfd75e"
+			}
+		}
+	}
+}
