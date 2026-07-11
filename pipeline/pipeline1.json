@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "lkp_EMR_configs",
+				"name": "Lookup_EMR_Configs",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -43,7 +43,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "lkp_EMR_configs",
+						"activity": "Lookup_EMR_Configs",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -79,7 +79,9 @@
 										"file_name": "@split(item().tablename,'.')[1]"
 									}
 								},
-								"fieldList": [],
+								"fieldList": [
+									"exists"
+								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"enablePartitionDiscovery": false
