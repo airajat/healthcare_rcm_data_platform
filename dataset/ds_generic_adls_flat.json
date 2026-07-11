@@ -1,0 +1,35 @@
+{
+	"name": "ds_generic_adls_flat",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_rcm_dev",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string"
+			},
+			"file_path": {
+				"type": "string"
+			},
+			"file_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "@dataset().file_name",
+				"folderPath": "@dataset().file_path",
+				"fileSystem": "@dataset().container"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
