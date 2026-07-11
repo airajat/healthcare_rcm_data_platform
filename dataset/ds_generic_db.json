@@ -1,0 +1,30 @@
+{
+	"name": "ds_generic_db",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_db_rcm_dev",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"db_name": "@dataset().db_name"
+			}
+		},
+		"parameters": {
+			"db_name": {
+				"type": "string"
+			},
+			"schema_name": {
+				"type": "string"
+			},
+			"table_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "db_name",
+			"table": "@dataset().db_name"
+		}
+	}
+}
