@@ -258,6 +258,34 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "Insert_Logs_Full_Load",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureDatabricksDeltaLakeSource",
+									"query": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values(''',item().datasource,''',''',item().tablename,''',''',activity('Full_Load_CP').output.rowsCopied,''',''',item().watermark,''',''',utcNow(),''')')"
+								},
+								"dataset": {
+									"referenceName": "ds_generic_dl",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": "'aa'",
+										"table_name": "'aa'"
+									}
+								},
+								"firstRowOnly": false
+							}
 						}
 					]
 				}
