@@ -84,6 +84,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -212,7 +213,10 @@
 										"typeProperties": {
 											"source": {
 												"type": "AzureDatabricksDeltaLakeSource",
-												"query": "@concat('select coalesce(cast(max(loaddate) as date),''','1900-01-01',''') as last_fetched_date from audit.load_logs where','data_source=''',item().datasource,''' and tablename=''',item().tablename,'''')"
+												"query": {
+													"value": "@concat('select coalesce(cast(max(loaddate) as date),''','1900-01-01',''') as last_fetched_date from audit.load_logs where','data_source=''',item().datasource,''' and tablename=''',item().tablename,'''')",
+													"type": "Expression"
+												}
 											},
 											"dataset": {
 												"referenceName": "ds_generic_dl",
@@ -247,7 +251,7 @@
 										"typeProperties": {
 											"source": {
 												"type": "AzureSqlSource",
-												"sqlReaderQuery": "Select query\n@concat('select *,''',item().datasource,''' as datasource from ', item().tablename,'where',item().watermark,' >= ''', activity('Fetch_logs').output.firstRow.last_fetched_date,'''')",
+												"sqlReaderQuery": "Select query\n@concat('select *,''',item().datasource,''' as datasource from ', item().tablename,' where ',item().watermark,' >= ''', activity('Fetch_logs').output.firstRow.last_fetched_date,'''')",
 												"queryTimeout": "00:10:00",
 												"partitionOption": "None"
 											},
@@ -315,7 +319,10 @@
 										"typeProperties": {
 											"source": {
 												"type": "AzureDatabricksDeltaLakeSource",
-												"query": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''', item().datasource,''',''',item().tablename,''',''',activity('Incremental_Load_CP').output.rowsCopied,''',''',item().watermark,''',''',utcNow(),''')')"
+												"query": {
+													"value": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''', item().datasource,''',''',item().tablename,''',''',activity('Incremental_Load_CP').output.rowsCopied,''',''',item().watermark,''',''',utcNow(),''')')",
+													"type": "Expression"
+												}
 											},
 											"dataset": {
 												"referenceName": "ds_generic_dl",
@@ -345,7 +352,10 @@
 										"typeProperties": {
 											"source": {
 												"type": "AzureSqlSource",
-												"sqlReaderQuery": "@concat('select *,''',item().datasource,'''as datasource from '\n,item().tablename)",
+												"sqlReaderQuery": {
+													"value": "@concat('select *,''',item().datasource,'''as datasource from '\n,item().tablename)",
+													"type": "Expression"
+												},
 												"queryTimeout": "00:10:00",
 												"partitionOption": "None"
 											},
@@ -413,7 +423,10 @@
 										"typeProperties": {
 											"source": {
 												"type": "AzureDatabricksDeltaLakeSource",
-												"query": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values(''',item().datasource,''',''',item().tablename,''',''',activity('Full_Load_CP').output.rowsCopied,''',''',item().watermark,''',''',utcNow(),''')')"
+												"query": {
+													"value": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values(''',item().datasource,''',''',item().tablename,''',''',activity('Full_Load_CP').output.rowsCopied,''',''',item().watermark,''',''',utcNow(),''')')",
+													"type": "Expression"
+												}
 											},
 											"dataset": {
 												"referenceName": "ds_generic_dl",
