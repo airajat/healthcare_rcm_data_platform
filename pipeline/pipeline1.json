@@ -320,7 +320,7 @@
 											"source": {
 												"type": "AzureDatabricksDeltaLakeSource",
 												"query": {
-													"value": "@concat('insert into audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''', item().datasource,''',''',item().tablename,''',''',activity('Incremental_Load_CP').output.rowsCopied,''',''',item().watermark,''',''',utcNow(),''')')",
+													"value": "@concat('insert into rcm_dev.audit.load_logs(data_source,tablename,numberofrowscopied,watermarkcolumnname,loaddate) values (''', item().datasource,''',''',item().tablename,''',''',activity('Incremental_Load_CP').output.rowsCopied,''',''',item().watermark,''',''',utcNow(),''')')",
 													"type": "Expression"
 												}
 											},
@@ -328,8 +328,8 @@
 												"referenceName": "ds_generic_dl",
 												"type": "DatasetReference",
 												"parameters": {
-													"schema_name": "'aa'",
-													"table_name": "'aa'"
+													"schema_name": "'audit'",
+													"table_name": "'load_logs'"
 												}
 											},
 											"firstRowOnly": false
