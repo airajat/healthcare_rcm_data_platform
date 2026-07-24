@@ -222,8 +222,8 @@
 												"referenceName": "ds_generic_dl",
 												"type": "DatasetReference",
 												"parameters": {
-													"schema_name": "'aa'",
-													"table_name": "'a'"
+													"schema_name": "'audit'",
+													"table_name": "'load_logs'"
 												}
 											},
 											"firstRowOnly": false
