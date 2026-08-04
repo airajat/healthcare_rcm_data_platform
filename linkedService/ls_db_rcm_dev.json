@@ -5,6 +5,14 @@
 			"db_name": {
 				"type": "string",
 				"defaultValue": "@dataset().db_name"
+			},
+			"schema_name": {
+				"type": "string",
+				"defaultValue": "@dataset().schema_name"
+			},
+			"table_name": {
+				"type": "string",
+				"defaultValue": "@dataset().table_name"
 			}
 		},
 		"annotations": [],
