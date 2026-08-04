@@ -24,7 +24,10 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "db_name",
-			"table": "@dataset().db_name"
+			"table": {
+				"value": "@dataset().db_name",
+				"type": "Expression"
+			}
 		}
 	}
 }
