@@ -251,7 +251,10 @@
 										"typeProperties": {
 											"source": {
 												"type": "AzureSqlSource",
-												"sqlReaderQuery": "@concat('select *,''',item().datasource,''' as datasource from ', item().tablename, ' where ', item().watermark,' >= ''', activity('Fetch_logs').output.firstRow.last_fetched_date,'''')",
+												"sqlReaderQuery": {
+													"value": "@concat('select *,''', item().datasource, ''' as datasource from ', item().tablename, ' where ', item().watermark, ' >= ''', activity('Fetch_logs').output.firstRow.last_fetched_date, '''')",
+													"type": "Expression"
+												},
 												"queryTimeout": "00:10:00",
 												"partitionOption": "None"
 											},
