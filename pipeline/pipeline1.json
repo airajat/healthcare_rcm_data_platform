@@ -214,7 +214,7 @@
 											"source": {
 												"type": "AzureDatabricksDeltaLakeSource",
 												"query": {
-													"value": "@concat('select coalesce(cast(max(loaddate) as date),''','1900-01-01',''') as last_fetched_date from audit.load_logs where','data_source=''',item().datasource,''' and tablename=''',item().tablename,'''')",
+													"value": "@concat('select coalesce(cast(max(loaddate) as date), ''1900-01-01'') as last_fetched_date from rcm_dev.audit.load_logs where data_source = ''', item().datasource, ''' and tablename = ''', item().tablename, '''')",
 													"type": "Expression"
 												}
 											},
