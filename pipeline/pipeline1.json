@@ -226,7 +226,7 @@
 													"table_name": "'load_logs'"
 												}
 											},
-											"firstRowOnly": false
+											"firstRowOnly": true
 										}
 									},
 									{
