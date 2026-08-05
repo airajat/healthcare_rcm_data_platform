@@ -222,7 +222,6 @@
 												"referenceName": "ds_generic_dl",
 												"type": "DatasetReference",
 												"parameters": {
-													"db_name": "'audit'",
 													"schema_name": "'load_logs'"
 												}
 											},
@@ -260,7 +259,6 @@
 												"referenceName": "ds_generic_dl",
 												"type": "DatasetReference",
 												"parameters": {
-													"db_name": "'audit'",
 													"schema_name": "'load_logs'"
 												}
 											},

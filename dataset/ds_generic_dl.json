@@ -16,10 +16,6 @@
 		"annotations": [],
 		"type": "AzureDatabricksDeltaLakeDataset",
 		"typeProperties": {
-			"database": {
-				"value": "@dataset().db_name",
-				"type": "Expression"
-			},
 			"table": {
 				"value": "@dataset().table_name",
 				"type": "Expression"
