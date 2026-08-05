@@ -441,8 +441,8 @@
 												"referenceName": "ds_generic_dl",
 												"type": "DatasetReference",
 												"parameters": {
-													"db_name": "'aa'",
-													"schema_name": "'aa'"
+													"schema_name": "'audit'",
+													"table_name": "'load_logs'"
 												}
 											},
 											"firstRowOnly": false
