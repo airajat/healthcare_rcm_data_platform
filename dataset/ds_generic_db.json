@@ -5,7 +5,9 @@
 			"referenceName": "ls_db_rcm_dev",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"db_name": "@dataset().db_name"
+				"db_name": "@dataset().db_name",
+				"schema_name": "@dataset().schema_name",
+				"table_name": "@dataset().table_name"
 			}
 		},
 		"parameters": {
