@@ -6,6 +6,9 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
+			"db_name": {
+				"type": "string"
+			},
 			"schema_name": {
 				"type": "string"
 			},
@@ -17,7 +20,7 @@
 		"type": "AzureDatabricksDeltaLakeDataset",
 		"typeProperties": {
 			"database": {
-				"value": "@dataset().schema_name",
+				"value": "@dataset().db_name",
 				"type": "Expression"
 			},
 			"table": {
