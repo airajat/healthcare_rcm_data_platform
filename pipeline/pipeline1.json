@@ -362,7 +362,7 @@
 											"source": {
 												"type": "AzureSqlSource",
 												"sqlReaderQuery": {
-													"value": "@concat('select *,''',item().datasource,'''as datasource from '\n,item().tablename)",
+													"value": "@concat('select *,''',item().datasource,''' as datasource from '\n,item().tablename)",
 													"type": "Expression"
 												},
 												"queryTimeout": "00:10:00",
