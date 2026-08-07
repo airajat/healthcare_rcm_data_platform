@@ -207,7 +207,22 @@
 										},
 										"userProperties": [],
 										"typeProperties": {
-											"waitOnCompletion": true
+											"pipeline": {
+												"referenceName": "pipeline2",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"database": "@item().database",
+												"tablename": "@item().tablename",
+												"loadtype": {
+													"value": "@item().loadtype",
+													"type": "Expression"
+												},
+												"datasource": "@item().datasource",
+												"targetpath": "@item().targetpath",
+												"watermark": "@item().watermark"
+											}
 										}
 									}
 								]
