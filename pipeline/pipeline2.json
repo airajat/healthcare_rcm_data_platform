@@ -12,6 +12,138 @@
 						"value": "@equals(pipeline().parameters.loadtype, 'Full')",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "Fetch_logs",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureDatabricksDeltaLakeSource",
+									"query": "@concat('select coalesce(cast(max(loaddate) as date), ''1900-01-01'') as last_fetched_date from rcm_dev.audit.load_logs where data_source = ''', pipeline().parameters.datasource, ''' and tablename = ''', pipeline().parameters.tablename, '''')"
+								},
+								"dataset": {
+									"referenceName": "ds_generic_dl",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": "'audit'",
+										"table_name": "'load_logs'"
+									}
+								}
+							}
+						},
+						{
+							"name": "Incremental_Load_CP",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Fetch_logs",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": "@concat('select *,''', pipeline().parameters.datasource, ''' as datasource from ', pipeline().parameters.tablename, ' where ', pipeline().parameters.watermark, ' >= ''', activity('Fetch_logs').output.firstRow.last_fetched_date, '''')",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_generic_db",
+									"type": "DatasetReference",
+									"parameters": {
+										"db_name": "@pipeline().parameters.database",
+										"schema_name": "@split(pipeline().parameters.tablename, '.')[0]",
+										"table_name": "@split(pipeline().parameters.tablename, '.')[1]"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_generic_adls_parquet",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "'bronze'",
+										"file_path": "@pipeline().parameters.targetpath",
+										"file_name": "@concat(pipeline().parameters.tablename, '.parquet')"
+									}
+								}
+							]
+						},
+						{
+							"name": "Insert_Logs_Inc_Load",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Incremental_Load_CP",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureDatabricksDeltaLakeSource",
+									"query": "@concat('insert into rcm_dev.audit.load_logs values (''', guid(), ''', ''', pipeline().parameters.datasource, ''', ''', pipeline().parameters.tablename, ''', ''', pipeline().parameters.loadtype, ''', ', activity('Incremental_Load_CP').output.rowsCopied, ', current_timestamp(), ''Success'', '''')')"
+								},
+								"dataset": {
+									"referenceName": "ds_generic_dl",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": "'audit'",
+										"table_name": "'load_logs'"
+									}
+								},
+								"firstRowOnly": false
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "Full_Load_CP",
@@ -29,13 +161,30 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "@concat('select *,''', pipeline().parameters.datasource, ''' as datasource from ', pipeline().parameters.table_name)",
+										"value": "@concat('select *,''', pipeline().parameters.datasource, ''' as datasource from ', pipeline().parameters.tablename)",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
 									"partitionOption": "None"
 								},
-								"enableStaging": false
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
 							"inputs": [
 								{
@@ -43,20 +192,69 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"db_name": {
-											"value": "@pipeline().parameters.db_name",
+											"value": "@pipeline().parameters.database",
 											"type": "Expression"
 										},
 										"schema_name": {
-											"value": "@split(pipeline().parameters.table_name, '.')[0]",
+											"value": "@split(pipeline().parameters.tablename, '.')[0]",
 											"type": "Expression"
 										},
 										"table_name": {
-											"value": "@split(pipeline().parameters.table_name, '.')[0]",
+											"value": "@split(pipeline().parameters.tablename, '.')[0]",
 											"type": "Expression"
 										}
 									}
 								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_generic_adls_parquet",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "'bronze'",
+										"file_path": "@pipeline().parameters.targetpath",
+										"file_name": "@concat(pipeline().parameters.tablename, '.parquet')"
+									}
+								}
 							]
+						},
+						{
+							"name": "Insert_Logs_Full_Load",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Full_Load_CP",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureDatabricksDeltaLakeSource",
+									"query": {
+										"value": "@concat('insert into rcm_dev.audit.load_logs values (''', guid(), ''', ''', pipeline().parameters.datasource, ''', ''', pipeline().parameters.tablename, ''', ''', pipeline().parameters.loadtype, ''', ', activity('Full_Load_CP').output.rowsCopied, ', current_timestamp(), ''Success'', '''')')",
+										"type": "Expression"
+									}
+								},
+								"dataset": {
+									"referenceName": "ds_generic_dl",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": "audit",
+										"table_name": "load_logs"
+									}
+								},
+								"firstRowOnly": false
+							}
 						}
 					]
 				}
